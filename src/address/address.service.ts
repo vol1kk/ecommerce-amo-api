@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
-import { UpdateAddressDto } from "./dto/update-address.dto";
-import { CreateAddressDto } from "./dto/create-address.dto";
-import { DatabaseService } from "../database/database.service";
+import { DatabaseService } from "@/database/database.service";
+import { CreateAddressDto } from "@/address/dto/create-address.dto";
+import { UpdateAddressDto } from "@/address/dto/update-address.dto";
 
 @Injectable()
 export class AddressService {

@@ -10,14 +10,14 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { ItemsService } from "./items.service";
-import { CreateItemDto } from "./dto/create-item.dto";
-import { UpdateItemDto } from "./dto/update-item.dto";
+import { ItemsService } from "@/items/items.service";
+import { CreateItemDto } from "@/items/dto/create-item.dto";
+import { UpdateItemDto } from "@/items/dto/update-item.dto";
 import {
   DatabaseName,
   ExistsGuard,
   IgnoreExistsGuard,
-} from "../guards/ExistsGuard";
+} from "@/guards/ExistsGuard";
 
 export type ItemsFindAllQuery = {
   category: "men" | "women";

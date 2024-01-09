@@ -1,10 +1,11 @@
-import { createZodDto } from "nestjs-zod";
 import { z } from "nestjs-zod/z";
+import { createZodDto } from "nestjs-zod";
+
 import {
   ItemSchema,
-  ItemCommentSchema,
   ItemDetailsSchema,
-} from "../entities/item.entity";
+  ItemCommentSchema,
+} from "@/items/entities/item.entity";
 
 export const CommentSchemaNoId = ItemCommentSchema.omit({
   id: true,

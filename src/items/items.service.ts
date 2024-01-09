@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
-import { CreateItemDto } from "./dto/create-item.dto";
-import { UpdateItemDto } from "./dto/update-item.dto";
-import { ItemsFindAllQuery } from "./items.controller";
-import { DatabaseService } from "../database/database.service";
+import { CreateItemDto } from "@/items/dto/create-item.dto";
+import { UpdateItemDto } from "@/items/dto/update-item.dto";
+import { ItemsFindAllQuery } from "@/items/items.controller";
+import { DatabaseService } from "@/database/database.service";
 
 @Injectable()
 export class ItemsService {

@@ -9,15 +9,14 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
+import { AddressService } from "@/address/address.service";
+import { CreateAddressDto } from "@/address/dto/create-address.dto";
+import { UpdateAddressDto } from "@/address/dto/update-address.dto";
 import {
   DatabaseName,
   ExistsGuard,
   IgnoreExistsGuard,
-} from "../guards/ExistsGuard";
-
-import { AddressService } from "./address.service";
-import { CreateAddressDto } from "./dto/create-address.dto";
-import { UpdateAddressDto } from "./dto/update-address.dto";
+} from "@/guards/ExistsGuard";
 
 @Controller("addresses")
 @DatabaseName("address")

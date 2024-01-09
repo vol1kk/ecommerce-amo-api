@@ -1,14 +1,14 @@
+import { Request } from "express";
 import { Reflector } from "@nestjs/core";
 import {
   Injectable,
   CanActivate,
-  ExecutionContext,
   SetMetadata,
+  ExecutionContext,
   NotFoundException,
 } from "@nestjs/common";
 
-import { DatabaseService } from "../database/database.service";
-import { Request } from "express";
+import { DatabaseService } from "@/database/database.service";
 
 @Injectable()
 export class ExistsGuard implements CanActivate {
