@@ -30,11 +30,6 @@ export class UsersService {
 
   // Disabling rule, because WebStorm's Prisma plugin being weird
   update(id: string, updateUserDto: UpdateUserDto) {
-    const existingEntry = this.findOne(id);
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     const { address, ...data } = updateUserDto;
 
     return this.db.$transaction(async tx => {
@@ -59,11 +54,6 @@ export class UsersService {
   }
 
   remove(id: string) {
-    const existingEntry = this.findOne(id);
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     return this.db.user.delete({ where: { id } });
   }
 }

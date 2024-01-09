@@ -42,12 +42,6 @@ export class ItemsService {
 
   // TODO: Create /comments route to update existing comments
   async update(id: string, updateItemDto: Partial<UpdateItemDto>) {
-    const existingEntry = await this.findOne(id);
-
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     const { details, ...item } = updateItemDto;
 
     return this.db.item.update({
@@ -66,12 +60,6 @@ export class ItemsService {
   }
 
   async remove(id: string) {
-    const existingEntry = await this.findOne(id);
-
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     return this.db.item.delete({ where: { id } });
   }
 }

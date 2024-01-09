@@ -23,12 +23,6 @@ export class AddressService {
   }
 
   async update(id: string, updateAddressDto: UpdateAddressDto) {
-    const existingEntry = await this.findOne(id);
-
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     return this.db.address.update({
       where: {
         id,
@@ -38,12 +32,6 @@ export class AddressService {
   }
 
   async remove(id: string) {
-    const existingEntry = await this.findOne(id);
-
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     return this.db.address.delete({ where: { id } });
   }
 }
