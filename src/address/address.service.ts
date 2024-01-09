@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { UpdateAddressDto } from "./dto/update-address.dto";
 import { CreateAddressDto } from "./dto/create-address.dto";
@@ -22,7 +22,13 @@ export class AddressService {
     return this.db.address.findUnique({ where: { id } });
   }
 
-  update(id: string, updateAddressDto: UpdateAddressDto) {
+  async update(id: string, updateAddressDto: UpdateAddressDto) {
+    const existingEntry = await this.findOne(id);
+
+    if (!existingEntry) {
+      throw new NotFoundException();
+    }
+
     return this.db.address.update({
       where: {
         id,
@@ -31,7 +37,13 @@ export class AddressService {
     });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const existingEntry = await this.findOne(id);
+
+    if (!existingEntry) {
+      throw new NotFoundException();
+    }
+
     return this.db.address.delete({ where: { id } });
   }
 }

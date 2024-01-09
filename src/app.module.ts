@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { APP_PIPE } from "@nestjs/core";
+import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
@@ -8,8 +10,19 @@ import { AddressModule } from "./address/address.module";
 import { DatabaseModule } from "./database/database.module";
 
 @Module({
-  imports: [ItemsModule, DatabaseModule, AddressModule, UsersModule],
+  imports: [
+    ItemsModule,
+    UsersModule,
+    AddressModule,
+    DatabaseModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
+    },
+  ],
 })
 export class AppModule {}

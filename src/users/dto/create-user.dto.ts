@@ -1,3 +1,7 @@
-import { User } from "../entities/user.entity";
+import { createZodDto } from "nestjs-zod";
 
-export class CreateUserDto extends User {}
+import { UserSchema } from "../entities/user.entity";
+
+export class CreateUserDto extends createZodDto(
+  UserSchema.omit({ id: true }),
+) {}

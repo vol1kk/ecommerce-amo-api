@@ -1,7 +1,7 @@
-import { OmitType } from "@nestjs/mapped-types";
-import { CreateAddressDto } from "./create-address.dto";
+import { createZodDto } from "nestjs-zod";
+import { PartialType } from "@nestjs/mapped-types";
+import { AddressSchema } from "../entities/address.entity";
 
-export class UpdateAddressDto extends OmitType(CreateAddressDto, [
-  "id",
-  "userId",
-] as const) {}
+export class UpdateAddressDto extends PartialType(
+  createZodDto(AddressSchema),
+) {}

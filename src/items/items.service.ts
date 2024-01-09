@@ -1,6 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
-import prepareItemDto from "./utils/prepareItemDto";
 import { CreateItemDto } from "./dto/create-item.dto";
 import { UpdateItemDto } from "./dto/update-item.dto";
 import { ItemsFindAllQuery } from "./items.controller";
@@ -11,20 +10,16 @@ export class ItemsService {
   constructor(private db: DatabaseService) {}
 
   create(createItemDto: CreateItemDto) {
-    const { itemData, detailsData, commentData } =
-      prepareItemDto<"create">(createItemDto);
+    const { details, ...item } = createItemDto;
+    const { comments, ...detailsRest } = details;
 
     return this.db.item.create({
       data: {
-        ...itemData,
+        ...item,
         details: {
           create: {
-            ...detailsData,
-            comments: {
-              createMany: {
-                data: commentData,
-              },
-            },
+            ...detailsRest,
+            comments: { createMany: { data: comments } },
           },
         },
       },
@@ -45,18 +40,25 @@ export class ItemsService {
     });
   }
 
+  // TODO: Create /comments route to update existing comments
   async update(id: string, updateItemDto: Partial<UpdateItemDto>) {
-    const { itemData, detailsData } = prepareItemDto<"update">(updateItemDto);
+    const existingEntry = await this.findOne(id);
+
+    if (!existingEntry) {
+      throw new NotFoundException();
+    }
+
+    const { details, ...item } = updateItemDto;
 
     return this.db.item.update({
       where: {
         id,
       },
       data: {
-        ...itemData,
+        ...item,
         details: {
           update: {
-            ...detailsData,
+            ...details,
           },
         },
       },
@@ -64,6 +66,12 @@ export class ItemsService {
   }
 
   async remove(id: string) {
+    const existingEntry = await this.findOne(id);
+
+    if (!existingEntry) {
+      throw new NotFoundException();
+    }
+
     return this.db.item.delete({ where: { id } });
   }
 }
