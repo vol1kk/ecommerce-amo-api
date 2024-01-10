@@ -9,21 +9,30 @@ export class UsersService {
   constructor(private db: DatabaseService) {}
 
   create(createUserDto: CreateUserDto) {
+    const { address, ...user } = createUserDto;
+
     return this.db.user.create({
       data: {
-        ...createUserDto,
-        address: {
-          createMany: {
-            data: createUserDto.address,
+        ...user,
+        ...(address && {
+          address: {
+            createMany: { data: [] },
           },
-        },
+        }),
       },
     });
   }
 
-  findOne(id: string) {
+  findById(id: string) {
     return this.db.user.findUnique({
       where: { id },
+      include: { address: true },
+    });
+  }
+
+  findByEmail(email: string) {
+    return this.db.user.findUnique({
+      where: { email },
       include: { address: true },
     });
   }

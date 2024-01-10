@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 
 import { UsersService } from "@/users/users.service";
+import isValidObjectId from "@/utils/isValidObjectId";
 import { CreateUserDto } from "@/users/dto/create-user.dto";
 import { UpdateUserDto } from "@/users/dto/update-user.dto";
 import {
@@ -33,7 +34,11 @@ export class UsersController {
   @Get(":id")
   @IgnoreExistsGuard()
   findOne(@Param("id") id: string) {
-    return this.usersService.findOne(id);
+    if (isValidObjectId(id)) {
+      return this.usersService.findById(id);
+    } else {
+      return this.usersService.findByEmail(id);
+    }
   }
 
   @Patch(":id")

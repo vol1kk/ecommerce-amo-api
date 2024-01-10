@@ -9,6 +9,7 @@ import {
 } from "@nestjs/common";
 
 import { DatabaseService } from "@/database/database.service";
+import isValidObjectId from "@/utils/isValidObjectId";
 
 @Injectable()
 export class ExistsGuard implements CanActivate {
@@ -30,8 +31,7 @@ export class ExistsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest() as Request;
     const id = request.params.id;
 
-    const isValidId = new RegExp("^[0-9a-fA-F]{24}$").test(id);
-    if (!isValidId) {
+    if (!isValidObjectId(id)) {
       throw new NotFoundException();
     }
 
