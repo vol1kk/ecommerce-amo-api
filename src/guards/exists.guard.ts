@@ -21,17 +21,22 @@ export class ExistsGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest() as Request;
+
     const ignoreExistence = getMetadata<boolean>(
       IgnoreExistenceKey,
       this.reflector,
       context,
     );
 
-    if (ignoreExistence) {
+    if (
+      ignoreExistence ||
+      request.method === "GET" ||
+      request.method === "POST"
+    ) {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest() as Request;
     const id = request.params.id;
 
     if (!isValidObjectId(id)) {

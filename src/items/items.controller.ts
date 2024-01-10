@@ -25,14 +25,12 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  @IgnoreExistence()
   create(@Body() createItemDto: CreateItemDto) {
     return this.itemsService.create(createItemDto);
   }
 
   @Get()
   @IgnoreAuth()
-  @IgnoreExistence()
   findAll(@Query() query: ItemsFindAllQuery) {
     const category = query.category;
 

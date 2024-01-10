@@ -19,13 +19,11 @@ export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  @IgnoreExistence()
   create(@Body() createAddressDto: CreateAddressDto) {
     return this.addressService.create(createAddressDto);
   }
 
   @Get()
-  @IgnoreExistence()
   findAll() {
     return this.addressService.findAll();
   }

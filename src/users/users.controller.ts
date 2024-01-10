@@ -20,13 +20,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @IgnoreExistence()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get(":id")
-  @IgnoreExistence()
   findOne(@Param("id") id: string) {
     if (isValidObjectId(id)) {
       return this.usersService.findById(id);
