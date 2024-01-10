@@ -7,36 +7,30 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 
 import { ItemsService } from "@/items/items.service";
-import { CreateItemDto } from "@/items/dto/create-item.dto";
-import { UpdateItemDto } from "@/items/dto/update-item.dto";
-import {
-  DatabaseName,
-  ExistsGuard,
-  IgnoreExistsGuard,
-} from "@/guards/ExistsGuard";
+import { CreateItemDto, UpdateItemDto } from "@/items/dto";
+import { SetDatabaseName } from "@/decorators/set-database.decorator";
+import { IgnoreExistence } from "@/decorators/ignore-existence.decorator";
 
 export type ItemsFindAllQuery = {
   category: "men" | "women";
 };
 
 @Controller("items")
-@DatabaseName("item")
-@UseGuards(ExistsGuard)
+@SetDatabaseName("item")
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  @IgnoreExistsGuard()
+  @IgnoreExistence()
   create(@Body() createItemDto: CreateItemDto) {
     return this.itemsService.create(createItemDto);
   }
 
   @Get()
-  @IgnoreExistsGuard()
+  @IgnoreExistence()
   findAll(@Query() query: ItemsFindAllQuery) {
     const category = query.category;
 

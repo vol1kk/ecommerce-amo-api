@@ -6,32 +6,26 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
 } from "@nestjs/common";
 
 import { AddressService } from "@/address/address.service";
-import { CreateAddressDto } from "@/address/dto/create-address.dto";
-import { UpdateAddressDto } from "@/address/dto/update-address.dto";
-import {
-  DatabaseName,
-  ExistsGuard,
-  IgnoreExistsGuard,
-} from "@/guards/ExistsGuard";
+import { CreateAddressDto, UpdateAddressDto } from "@/address/dto";
+import { SetDatabaseName } from "@/decorators/set-database.decorator";
+import { IgnoreExistence } from "@/decorators/ignore-existence.decorator";
 
 @Controller("addresses")
-@DatabaseName("address")
-@UseGuards(ExistsGuard)
+@SetDatabaseName("address")
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  @IgnoreExistsGuard()
+  @IgnoreExistence()
   create(@Body() createAddressDto: CreateAddressDto) {
     return this.addressService.create(createAddressDto);
   }
 
   @Get()
-  @IgnoreExistsGuard()
+  @IgnoreExistence()
   findAll() {
     return this.addressService.findAll();
   }

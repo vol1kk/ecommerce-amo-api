@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { CreateItemDto } from "@/items/dto/create-item.dto";
-import { UpdateItemDto } from "@/items/dto/update-item.dto";
+import { CreateItemDto, UpdateItemDto } from "@/items/dto";
 import { ItemsFindAllQuery } from "@/items/items.controller";
 import { DatabaseService } from "@/database/database.service";
 

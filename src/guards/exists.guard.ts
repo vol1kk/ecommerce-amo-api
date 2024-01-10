@@ -3,13 +3,15 @@ import { Reflector } from "@nestjs/core";
 import {
   Injectable,
   CanActivate,
-  SetMetadata,
   ExecutionContext,
   NotFoundException,
 } from "@nestjs/common";
 
-import { DatabaseService } from "@/database/database.service";
+import getMetadata from "@/utils/getMetadata";
 import isValidObjectId from "@/utils/isValidObjectId";
+import { DatabaseService } from "@/database/database.service";
+import { SetDatabaseKey } from "@/decorators/set-database.decorator";
+import { IgnoreExistenceKey } from "@/decorators/ignore-existence.decorator";
 
 @Injectable()
 export class ExistsGuard implements CanActivate {
@@ -19,10 +21,11 @@ export class ExistsGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
-    const ignoreExistence = this.reflector.get(
-      "ignoreExistence",
-      context.getHandler(),
-    ) as string;
+    const ignoreExistence = getMetadata<boolean>(
+      IgnoreExistenceKey,
+      this.reflector,
+      context,
+    );
 
     if (ignoreExistence) {
       return true;
@@ -35,10 +38,7 @@ export class ExistsGuard implements CanActivate {
       throw new NotFoundException();
     }
 
-    const dbName = this.reflector.get(
-      "databaseName",
-      context.getClass(),
-    ) as string;
+    const dbName = getMetadata<string>(SetDatabaseKey, this.reflector, context);
 
     const entry = await this.db[dbName].findUnique({ where: { id } });
     if (entry) {
@@ -48,20 +48,3 @@ export class ExistsGuard implements CanActivate {
     }
   }
 }
-
-export const DatabaseName = (name: string) => SetMetadata("databaseName", name);
-export const IgnoreExistsGuard = () => SetMetadata("ignoreExistence", true);
-
-// For some reason this.db in mixin is undefined
-// export function ExistsInGuard(database: string): Type<CanActivate> {
-//   class ExistsInGuardMixin implements CanActivate {
-//     constructor(private db: DatabaseService) {}
-//     async canActivate(context: ExecutionContext) {
-//       // const addresses = await this.db.address.findMany();
-//       console.log(this.db, database);
-//       return true;
-//     }
-//   }
-//
-//   return mixin(ExistsInGuardMixin);
-// }
