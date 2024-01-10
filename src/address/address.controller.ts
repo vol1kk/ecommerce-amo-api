@@ -11,7 +11,6 @@ import {
 import { AddressService } from "@/address/address.service";
 import { CreateAddressDto, UpdateAddressDto } from "@/address/dto";
 import { SetDatabaseName } from "@/decorators/set-database.decorator";
-import { IgnoreExistence } from "@/decorators/ignore-existence.decorator";
 
 @Controller("addresses")
 @SetDatabaseName("address")

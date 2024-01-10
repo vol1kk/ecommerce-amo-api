@@ -12,7 +12,6 @@ import { UsersService } from "@/users/users.service";
 import isValidObjectId from "@/utils/isValidObjectId";
 import { CreateUserDto, UpdateUserDto } from "@/users/dto";
 import { SetDatabaseName } from "@/decorators/set-database.decorator";
-import { IgnoreExistence } from "@/decorators/ignore-existence.decorator";
 
 @Controller("users")
 @SetDatabaseName("user")
