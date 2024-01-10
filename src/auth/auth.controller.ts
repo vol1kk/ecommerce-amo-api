@@ -2,8 +2,12 @@ import { Body, Controller, Post } from "@nestjs/common";
 
 import { AuthDto } from "@/auth/dto/auth-dto";
 import { AuthService } from "@/auth/auth.service";
+import { IgnoreAuth } from "@/decorators/ignore-auth.decorator";
+import { IgnoreExistence } from "@/decorators/ignore-existence.decorator";
 
 @Controller("auth")
+@IgnoreAuth()
+@IgnoreExistence()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
