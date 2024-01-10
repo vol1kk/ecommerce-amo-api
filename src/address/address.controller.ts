@@ -10,7 +10,6 @@ import {
 
 import { AddressService } from "./address.service";
 import { CreateAddressDto } from "./dto/create-address.dto";
-import { UpdateAddressDto } from "./dto/update-address.dto";
 
 @Controller("address")
 export class AddressController {
@@ -32,7 +31,7 @@ export class AddressController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateAddressDto: UpdateAddressDto) {
+  update(@Param("id") id: string, @Body() updateAddressDto: CreateAddressDto) {
     return this.addressService.update(id, updateAddressDto);
   }
 
