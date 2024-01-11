@@ -8,10 +8,13 @@ import {
   Delete,
 } from "@nestjs/common";
 
-import { AddressService } from "./address.service";
-import { CreateAddressDto } from "./dto/create-address.dto";
+import { AddressService } from "@/address/address.service";
+import { CreateAddressDto, UpdateAddressDto } from "@/address/dto";
 
-@Controller("address")
+import { SetDatabaseName } from "@/utils/decorators/set-database.decorator";
+
+@Controller("addresses")
+@SetDatabaseName("address")
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
@@ -31,7 +34,7 @@ export class AddressController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateAddressDto: CreateAddressDto) {
+  update(@Param("id") id: string, @Body() updateAddressDto: UpdateAddressDto) {
     return this.addressService.update(id, updateAddressDto);
   }
 

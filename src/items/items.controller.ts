@@ -9,15 +9,18 @@ import {
   Query,
 } from "@nestjs/common";
 
-import { ItemsService } from "./items.service";
-import { CreateItemDto } from "./dto/create-item.dto";
-import { UpdateItemDto } from "./dto/update-item.dto";
+import { ItemsService } from "@/items/items.service";
+import { CreateItemDto, UpdateItemDto } from "@/items/dto";
+
+import { IgnoreAuth } from "@/utils//decorators/ignore-auth.decorator";
+import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
 
 export type ItemsFindAllQuery = {
   category: "men" | "women";
 };
 
 @Controller("items")
+@SetDatabaseName("item")
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
@@ -27,6 +30,7 @@ export class ItemsController {
   }
 
   @Get()
+  @IgnoreAuth()
   findAll(@Query() query: ItemsFindAllQuery) {
     const category = query.category;
 
@@ -34,6 +38,7 @@ export class ItemsController {
   }
 
   @Get(":id")
+  @IgnoreAuth()
   findOne(@Param("id") id: string) {
     return this.itemsService.findOne(id);
   }

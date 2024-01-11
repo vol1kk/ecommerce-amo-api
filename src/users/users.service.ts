@@ -1,40 +1,58 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Scope,
+  UnauthorizedException,
+} from "@nestjs/common";
 
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { DatabaseService } from "../database/database.service";
+import { CreateUserDto, UpdateUserDto } from "@/users/dto";
 
-@Injectable()
+import { DatabaseService } from "@/database/database.service";
+import { REQUEST } from "@nestjs/core";
+import { Request } from "express";
+
+@Injectable({ scope: Scope.REQUEST })
 export class UsersService {
-  constructor(private db: DatabaseService) {}
+  constructor(
+    private db: DatabaseService,
+    @Inject(REQUEST) private readonly request: Request,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
+    const { address, ...user } = createUserDto;
+
     return this.db.user.create({
       data: {
-        ...createUserDto,
-        address: {
-          createMany: {
-            data: createUserDto.address,
+        ...user,
+        ...(address && {
+          address: {
+            createMany: { data: [] },
           },
-        },
+        }),
       },
     });
   }
 
-  findOne(id: string) {
+  findById(id: string) {
+    if (this.request["user"]?.id !== id) {
+      throw new UnauthorizedException();
+    }
+
     return this.db.user.findUnique({
       where: { id },
       include: { address: true },
     });
   }
 
+  findByEmail(email: string) {
+    return this.db.user.findUnique({
+      where: { email },
+      include: { address: true },
+    });
+  }
+
   // Disabling rule, because WebStorm's Prisma plugin being weird
   update(id: string, updateUserDto: UpdateUserDto) {
-    const existingEntry = this.findOne(id);
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     const { address, ...data } = updateUserDto;
 
     return this.db.$transaction(async tx => {
@@ -59,11 +77,6 @@ export class UsersService {
   }
 
   remove(id: string) {
-    const existingEntry = this.findOne(id);
-    if (!existingEntry) {
-      throw new NotFoundException();
-    }
-
     return this.db.user.delete({ where: { id } });
   }
 }

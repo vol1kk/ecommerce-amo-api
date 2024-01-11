@@ -1,13 +1,14 @@
 import { z } from "nestjs-zod/z";
 import { createZodDto } from "nestjs-zod";
 import { PartialType } from "@nestjs/mapped-types";
-import { DetailsSchemaNoId, ItemSchemaNoId } from "./create-item.dto";
 
-const DetailsSchemaNoComments = DetailsSchemaNoId.omit({ comments: true });
-const ItemSchemaNoComments = ItemSchemaNoId.merge(
-  z.object({ details: DetailsSchemaNoComments }),
+import { ItemCommentSchema, ItemSchema } from "@/items/entities/item.entity";
+
+const CommentSchemaNoUser = ItemCommentSchema.omit({ user: true });
+const ItemSchemaNoDetails = ItemSchema.omit({ detailsId: true }).merge(
+  z.object({ comments: z.array(CommentSchemaNoUser) }),
 );
 
 export class UpdateItemDto extends PartialType(
-  createZodDto(ItemSchemaNoComments),
+  createZodDto(ItemSchemaNoDetails),
 ) {}

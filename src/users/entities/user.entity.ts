@@ -1,5 +1,6 @@
 import { z } from "nestjs-zod/z";
-import { AddressSchema } from "../../address/entities/address.entity";
+
+import { AddressSchema } from "@/address/entities/address.entity";
 
 export const UserSchema = z.object({
   id: z.string(),
