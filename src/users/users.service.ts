@@ -1,29 +1,52 @@
-import { Injectable } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Scope,
+  UnauthorizedException,
+} from "@nestjs/common";
 
-import { CreateUserDto } from "@/users/dto/create-user.dto";
-import { UpdateUserDto } from "@/users/dto/update-user.dto";
+import { CreateUserDto, UpdateUserDto } from "@/users/dto";
+
 import { DatabaseService } from "@/database/database.service";
+import { REQUEST } from "@nestjs/core";
+import { Request } from "express";
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class UsersService {
-  constructor(private db: DatabaseService) {}
+  constructor(
+    private db: DatabaseService,
+    @Inject(REQUEST) private readonly request: Request,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
+    const { address, ...user } = createUserDto;
+
     return this.db.user.create({
       data: {
-        ...createUserDto,
-        address: {
-          createMany: {
-            data: createUserDto.address,
+        ...user,
+        ...(address && {
+          address: {
+            createMany: { data: [] },
           },
-        },
+        }),
       },
     });
   }
 
-  findOne(id: string) {
+  findById(id: string) {
+    if (this.request["user"]?.id !== id) {
+      throw new UnauthorizedException();
+    }
+
     return this.db.user.findUnique({
       where: { id },
+      include: { address: true },
+    });
+  }
+
+  findByEmail(email: string) {
+    return this.db.user.findUnique({
+      where: { email },
       include: { address: true },
     });
   }

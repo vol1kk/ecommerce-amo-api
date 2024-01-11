@@ -1,12 +1,13 @@
 import { z } from "nestjs-zod/z";
+import { UserSchema } from "@/users/entities/user.entity";
 
 export const ItemCommentSchema = z.object({
   id: z.string(),
   text: z.string(),
-  author: z.string(),
+  user: UserSchema,
+  userId: z.string(),
   rating: z.number(),
   createdAt: z.dateString(),
-  itemDetailsId: z.string(),
 });
 
 export const ItemDetailsSchema = z.object({
@@ -19,7 +20,6 @@ export const ItemDetailsSchema = z.object({
   neck: z.string(),
   sleeve: z.string(),
   style: z.string(),
-  comments: z.array(ItemCommentSchema),
 });
 
 export const ItemSchema = z.object({
@@ -31,4 +31,5 @@ export const ItemSchema = z.object({
   price: z.number(),
   details: ItemDetailsSchema,
   detailsId: z.string(),
+  comments: z.array(ItemCommentSchema),
 });

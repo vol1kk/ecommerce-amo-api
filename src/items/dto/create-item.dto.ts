@@ -9,16 +9,20 @@ import {
 
 export const CommentSchemaNoId = ItemCommentSchema.omit({
   id: true,
-  itemDetailsId: true,
+  user: true,
+  userId: true,
 });
 
-export const DetailsSchemaNoId = ItemDetailsSchema.omit({ id: true }).merge(
-  z.object({ comments: z.array(CommentSchemaNoId) }),
-);
+export const DetailsSchemaNoId = ItemDetailsSchema.omit({ id: true });
 
 export const ItemSchemaNoId = ItemSchema.omit({
   id: true,
   detailsId: true,
-}).merge(z.object({ details: DetailsSchemaNoId }));
+}).merge(
+  z.object({
+    details: DetailsSchemaNoId,
+    comments: z.array(CommentSchemaNoId),
+  }),
+);
 
 export class CreateItemDto extends createZodDto(ItemSchemaNoId) {}

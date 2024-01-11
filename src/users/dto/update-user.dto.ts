@@ -1,5 +1,8 @@
+import { createZodDto } from "nestjs-zod";
 import { PartialType } from "@nestjs/mapped-types";
 
-import { CreateUserDto } from "@/users/dto/create-user.dto";
+import { UserSchema } from "@/users/entities/user.entity";
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends PartialType(
+  createZodDto(UserSchema),
+) {}
