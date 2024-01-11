@@ -24,11 +24,15 @@ export class AddressService {
   }
 
   findAll() {
-    return this.db.address.findMany();
+    const userId = this.request["user"]?.id;
+
+    return this.db.address.findMany({ where: { userId } });
   }
 
   findOne(id: string) {
-    return this.db.address.findUnique({ where: { id } });
+    const userId = this.request["user"]?.id;
+
+    return this.db.address.findUnique({ where: { id, userId } });
   }
 
   async update(id: string, updateAddressDto: UpdateAddressDto) {

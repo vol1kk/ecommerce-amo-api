@@ -4,12 +4,12 @@ import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 
 import { AppService } from "@/app.service";
 import { AuthModule } from "@/auth/auth.module";
-import { AuthGuard } from "@/guards/auth.guard";
+import { AuthGuard } from "@/utils//guards/auth.guard";
 import { AppController } from "@/app.controller";
 import { ItemsModule } from "@/items/items.module";
 import { UsersModule } from "@/users/users.module";
 import { TokenModule } from "@/token/token.module";
-import { ExistsGuard } from "@/guards/exists.guard";
+import { ExistsGuard } from "@/utils//guards/exists.guard";
 import { AddressModule } from "@/address/address.module";
 import { DatabaseModule } from "@/database/database.module";
 

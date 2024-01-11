@@ -5,6 +5,7 @@ import {
   CanActivate,
   ExecutionContext,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 
 import getMetadata from "@/utils/helpers/getMetadata";
@@ -46,6 +47,12 @@ export class ExistsGuard implements CanActivate {
     const dbName = getMetadata<string>(SetDatabaseKey, this.reflector, context);
 
     const entry = await this.db[dbName].findUnique({ where: { id } });
+
+    const user = request["user"];
+    if ("userId" in entry && entry["userId"] !== user.id) {
+      throw new UnauthorizedException();
+    }
+
     if (entry) {
       return true;
     } else {

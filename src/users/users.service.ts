@@ -1,11 +1,22 @@
-import { Injectable } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Scope,
+  UnauthorizedException,
+} from "@nestjs/common";
 
 import { CreateUserDto, UpdateUserDto } from "@/users/dto";
 
 import { DatabaseService } from "@/database/database.service";
-@Injectable()
+import { REQUEST } from "@nestjs/core";
+import { Request } from "express";
+
+@Injectable({ scope: Scope.REQUEST })
 export class UsersService {
-  constructor(private db: DatabaseService) {}
+  constructor(
+    private db: DatabaseService,
+    @Inject(REQUEST) private readonly request: Request,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
     const { address, ...user } = createUserDto;
@@ -23,6 +34,10 @@ export class UsersService {
   }
 
   findById(id: string) {
+    if (this.request["user"]?.id !== id) {
+      throw new UnauthorizedException();
+    }
+
     return this.db.user.findUnique({
       where: { id },
       include: { address: true },

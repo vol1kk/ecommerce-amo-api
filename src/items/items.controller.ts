@@ -12,8 +12,8 @@ import {
 import { ItemsService } from "@/items/items.service";
 import { CreateItemDto, UpdateItemDto } from "@/items/dto";
 
-import { IgnoreAuth } from "@/decorators/ignore-auth.decorator";
-import { SetDatabaseName } from "@/decorators/set-database.decorator";
+import { IgnoreAuth } from "@/utils//decorators/ignore-auth.decorator";
+import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
 
 export type ItemsFindAllQuery = {
   category: "men" | "women";

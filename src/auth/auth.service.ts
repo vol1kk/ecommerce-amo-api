@@ -60,10 +60,12 @@ export class AuthService {
     // Deleting password, so we don't send it to client
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = createdUser;
+    console.log(createdUser);
     const tokens = await this.tokenService.generateTokens({
       id: user.id,
       email: user.email,
     });
+    console.log(tokens.accessToken);
 
     return Object.assign(user, tokens);
   }

@@ -3,8 +3,8 @@ import { Controller, Get, Body, Patch, Param, Delete } from "@nestjs/common";
 import { UpdateUserDto } from "@/users/dto";
 import { UsersService } from "@/users/users.service";
 
-import isValidObjectId from "@/helpers/isValidObjectId";
-import { SetDatabaseName } from "@/decorators/set-database.decorator";
+import isValidObjectId from "@/utils//helpers/isValidObjectId";
+import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
 
 @Controller("users")
 @SetDatabaseName("user")

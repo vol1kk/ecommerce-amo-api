@@ -11,7 +11,7 @@ import {
 import { AddressService } from "@/address/address.service";
 import { CreateAddressDto, UpdateAddressDto } from "@/address/dto";
 
-import { SetDatabaseName } from "@/decorators/set-database.decorator";
+import { SetDatabaseName } from "@/utils/decorators/set-database.decorator";
 
 @Controller("addresses")
 @SetDatabaseName("address")
