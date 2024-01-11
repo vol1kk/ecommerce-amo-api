@@ -13,6 +13,7 @@ import isValidObjectId from "@/utils/helpers/isValidObjectId";
 import { DatabaseService } from "@/database/database.service";
 import { SetDatabaseKey } from "@/utils/decorators/set-database.decorator";
 import { IgnoreExistenceKey } from "@/utils/decorators/ignore-existence.decorator";
+import { CheckAgainstKey } from "@/utils/decorators/set-check-against.decorator";
 
 @Injectable()
 export class ExistsGuard implements CanActivate {
@@ -49,7 +50,14 @@ export class ExistsGuard implements CanActivate {
     const entry = await this.db[dbName].findUnique({ where: { id } });
 
     const user = request["user"];
-    if ("userId" in entry && entry["userId"] !== user.id) {
+
+    const checkAgainst = (getMetadata(
+      CheckAgainstKey,
+      this.reflector,
+      context,
+    ) || "userId") as string;
+
+    if (checkAgainst in entry && entry[checkAgainst] !== user.id) {
       throw new UnauthorizedException();
     }
 
