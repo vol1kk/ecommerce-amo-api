@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
+import { Controller, Get, Body, Patch, Param, Delete } from "@nestjs/common";
 
+import { UpdateUserDto } from "@/users/dto";
 import { UsersService } from "@/users/users.service";
-import { CreateUserDto, UpdateUserDto } from "@/users/dto";
 
 import isValidObjectId from "@/helpers/isValidObjectId";
 import { SetDatabaseName } from "@/decorators/set-database.decorator";
@@ -18,11 +10,6 @@ import { SetDatabaseName } from "@/decorators/set-database.decorator";
 @SetDatabaseName("user")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
