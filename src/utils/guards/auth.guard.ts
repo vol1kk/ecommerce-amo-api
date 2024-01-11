@@ -7,8 +7,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 
-import getMetadata from "@/utils/getMetadata";
-import { IgnoreAuthKey } from "@/decorators/ignore-auth.decorator";
+import getMetadata from "@/utils/helpers/getMetadata";
+import { IgnoreAuthKey } from "@/utils/decorators/ignore-auth.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

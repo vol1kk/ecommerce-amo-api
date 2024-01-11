@@ -9,8 +9,9 @@ import {
 } from "@nestjs/common";
 
 import { UsersService } from "@/users/users.service";
-import isValidObjectId from "@/utils/isValidObjectId";
 import { CreateUserDto, UpdateUserDto } from "@/users/dto";
+
+import isValidObjectId from "@/helpers/isValidObjectId";
 import { SetDatabaseName } from "@/decorators/set-database.decorator";
 
 @Controller("users")

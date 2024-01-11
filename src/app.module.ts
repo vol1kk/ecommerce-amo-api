@@ -1,10 +1,10 @@
-import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 import { Module } from "@nestjs/common";
 import { ZodValidationPipe } from "nestjs-zod";
+import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 
 import { AppService } from "@/app.service";
-import { AuthGuard } from "@/guards/auth.guard";
 import { AuthModule } from "@/auth/auth.module";
+import { AuthGuard } from "@/guards/auth.guard";
 import { AppController } from "@/app.controller";
 import { ItemsModule } from "@/items/items.module";
 import { UsersModule } from "@/users/users.module";

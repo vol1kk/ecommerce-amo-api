@@ -7,11 +7,11 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
-import getMetadata from "@/utils/getMetadata";
-import isValidObjectId from "@/utils/isValidObjectId";
+import getMetadata from "@/utils/helpers/getMetadata";
+import isValidObjectId from "@/utils/helpers/isValidObjectId";
 import { DatabaseService } from "@/database/database.service";
-import { SetDatabaseKey } from "@/decorators/set-database.decorator";
-import { IgnoreExistenceKey } from "@/decorators/ignore-existence.decorator";
+import { SetDatabaseKey } from "@/utils/decorators/set-database.decorator";
+import { IgnoreExistenceKey } from "@/utils/decorators/ignore-existence.decorator";
 
 @Injectable()
 export class ExistsGuard implements CanActivate {

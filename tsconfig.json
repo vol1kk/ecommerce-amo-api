@@ -18,7 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/decorators/*": ["./src/utils/decorators/*"],
+      "@/guards/*": ["./src/utils/guards/*"],
+      "@/helpers/*": ["./src/utils/helpers/*"],
     }
   }
 }

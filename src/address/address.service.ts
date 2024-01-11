@@ -24,9 +24,7 @@ export class AddressService {
   }
 
   findAll() {
-    const createdBy = this.request["user"]?.id as string | undefined;
-
-    return this.db.address.findMany({ where: { userId: createdBy } });
+    return this.db.address.findMany();
   }
 
   findOne(id: string) {
@@ -34,20 +32,15 @@ export class AddressService {
   }
 
   async update(id: string, updateAddressDto: UpdateAddressDto) {
-    const createdBy = this.request["user"]?.id as string | undefined;
-
     return this.db.address.update({
       where: {
         id,
-        userId: createdBy,
       },
       data: updateAddressDto,
     });
   }
 
   async remove(id: string) {
-    const createdBy = this.request["user"]?.id as string | undefined;
-
-    return this.db.address.delete({ where: { id, userId: createdBy } });
+    return this.db.address.delete({ where: { id } });
   }
 }
