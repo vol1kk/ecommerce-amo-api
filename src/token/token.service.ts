@@ -18,7 +18,7 @@ export class TokenService {
 
   async generateTokens(payload: object | Buffer) {
     const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: "5m",
+      expiresIn: "24h",
       secret: process.env.JWT_SECRET,
     });
 
