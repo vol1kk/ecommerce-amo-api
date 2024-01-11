@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 
-import { AuthDto } from "@/auth/dto/auth-dto";
+import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
 import { AuthService } from "@/auth/auth.service";
 import { IgnoreAuth } from "@/utils/decorators/ignore-auth.decorator";
 import { IgnoreExistence } from "@/utils/decorators/ignore-existence.decorator";
@@ -19,5 +19,10 @@ export class AuthController {
   @Post("register")
   register(@Body() registerDto: AuthDto) {
     return this.authService.register(registerDto);
+  }
+
+  @Post("oauth")
+  oauth(@Body() oauthDto: OAuthDto) {
+    return this.authService.oauth(oauthDto);
   }
 }

@@ -6,9 +6,9 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 
-import { AuthDto } from "@/auth/dto/auth-dto";
 import { UsersService } from "@/users/users.service";
 import { TokenService } from "@/token/token.service";
+import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
 
 @Injectable()
 export class AuthService {
@@ -68,5 +68,29 @@ export class AuthService {
     console.log(tokens.accessToken);
 
     return Object.assign(user, tokens);
+  }
+
+  async oauth(oauthDto: OAuthDto) {
+    const existingUser = await this.usersService.findByEmail(oauthDto.email);
+
+    if (!existingUser) {
+      const user = await this.usersService.create({
+        email: oauthDto.email,
+      });
+
+      const tokens = await this.tokenService.generateTokens({
+        id: user.id,
+        email: user.email,
+      });
+
+      return Object.assign(user, tokens);
+    } else {
+      // TODO: Update account model every login just in case
+      const tokens = await this.tokenService.generateTokens({
+        id: existingUser.id,
+        email: existingUser.email,
+      });
+      return Object.assign(existingUser, tokens);
+    }
   }
 }
