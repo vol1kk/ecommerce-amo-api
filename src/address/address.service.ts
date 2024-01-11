@@ -13,7 +13,7 @@ export class AddressService {
   ) {}
 
   create(createAddressDto: CreateAddressDto) {
-    const createdBy = this.request["user"]?.id as string | undefined;
+    const createdBy = this.request["user"]?.id as string;
 
     return this.db.address.create({
       data: {

@@ -8,7 +8,7 @@ export const AddressSchema = z.object({
   address: z.string(),
   postalCode: z.string(),
   phone: z.string(),
-  isDefault: z.boolean(),
+  isDefault: z.boolean().optional(),
   userId: z.string().nullable(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
