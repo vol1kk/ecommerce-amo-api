@@ -37,7 +37,10 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = existingUser;
 
-    const tokens = await this.tokenService.generateTokens(loginDto);
+    const tokens = await this.tokenService.generateTokens({
+      id: existingUser.id,
+      email: existingUser.email,
+    });
 
     return Object.assign(user, tokens);
   }
