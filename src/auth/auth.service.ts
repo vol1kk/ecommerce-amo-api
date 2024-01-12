@@ -9,10 +9,13 @@ import {
 import { UsersService } from "@/users/users.service";
 import { TokenService } from "@/token/token.service";
 import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
+import { DatabaseService } from "@/database/database.service";
+import { UsersModule } from "@/users/users.module";
 
 @Injectable()
 export class AuthService {
   constructor(
+    private db: DatabaseService,
     private usersService: UsersService,
     private tokenService: TokenService,
   ) {}
@@ -63,37 +66,61 @@ export class AuthService {
     // Deleting password, so we don't send it to client
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = createdUser;
-    console.log(createdUser);
     const tokens = await this.tokenService.generateTokens({
       id: user.id,
       email: user.email,
     });
-    console.log(tokens.accessToken);
 
     return Object.assign(user, tokens);
   }
 
   async oauth(oauthDto: OAuthDto) {
-    const existingUser = await this.usersService.findByEmail(oauthDto.email);
+    const existingUser = await this.usersService.findByEmail(
+      oauthDto.token.email,
+    );
 
     if (!existingUser) {
-      const user = await this.usersService.create({
-        email: oauthDto.email,
-      });
-
-      const tokens = await this.tokenService.generateTokens({
-        id: user.id,
-        email: user.email,
-      });
-
-      return Object.assign(user, tokens);
+      return this.oauthRegister(oauthDto);
     } else {
-      // TODO: Update account model every login just in case
-      const tokens = await this.tokenService.generateTokens({
-        id: existingUser.id,
-        email: existingUser.email,
-      });
-      return Object.assign(existingUser, tokens);
+      return this.oauthLogin(existingUser);
     }
+  }
+
+  private async oauthRegister(oauthDto: OAuthDto) {
+    const { picture, ...token } = oauthDto.token;
+
+    const createdUser = await this.usersService.create({
+      ...token,
+      image: picture,
+    });
+
+    const tokens = await this.tokenService.generateTokens({
+      id: createdUser.id,
+      email: createdUser.email,
+    });
+
+    await this.db.account.create({
+      data: {
+        ...oauthDto.account,
+        user: {
+          connect: {
+            id: createdUser.id,
+          },
+        },
+      },
+    });
+
+    return Object.assign(createdUser, tokens);
+  }
+
+  private async oauthLogin(
+    existingUser: Awaited<ReturnType<UsersService["findByEmail"]>>,
+  ) {
+    const tokens = await this.tokenService.generateTokens({
+      id: existingUser?.id,
+      email: existingUser?.email,
+    });
+
+    return Object.assign(existingUser || {}, tokens);
   }
 }
