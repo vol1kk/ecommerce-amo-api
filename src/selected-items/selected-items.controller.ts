@@ -13,11 +13,13 @@ import { CreateSelectedItemDto } from "@/selected-items/dto/create-selected-item
 import { UpdateSelectedItemDto } from "@/selected-items/dto/update-selected-item.dto";
 import { IgnoreAuth } from "@/utils/decorators/ignore-auth.decorator";
 import { SetDatabaseName } from "@/utils/decorators/set-database.decorator";
+import { IgnoreExistence } from "@/utils/decorators/ignore-existence.decorator";
 
 export type SelectedItemFind = {
   type: "all" | "wishlist" | "cart";
 };
 
+// TODO: @IgnoreExists() should be set for whole controller
 @Controller("selected")
 @SetDatabaseName("selectedItem")
 export class SelectedItemsController {
@@ -43,6 +45,7 @@ export class SelectedItemsController {
   }
 
   @Patch(":id")
+  @IgnoreExistence()
   update(
     @Param("id") id: string,
     @Body() updateSelectedItemDto: UpdateSelectedItemDto,

@@ -6,7 +6,6 @@ import { DatabaseService } from "@/database/database.service";
 import { REQUEST } from "@nestjs/core";
 import { SelectedItemFind } from "@/selected-items/selected-items.controller";
 import { TokenService } from "@/token/token.service";
-import { IgnoreAuth } from "@/utils/decorators/ignore-auth.decorator";
 
 @Injectable({ scope: Scope.REQUEST })
 export class SelectedItemsService {
@@ -17,7 +16,14 @@ export class SelectedItemsService {
   ) {}
 
   create(createSelectedItemDto: CreateSelectedItemDto) {
-    return "This action adds a new selectedItem";
+    const createdById = this.request["user"].id;
+
+    return this.db.selectedItem.create({
+      data: {
+        ...createSelectedItemDto,
+        userId: createdById,
+      },
+    });
   }
 
   async findAll(type: SelectedItemFind["type"]) {
@@ -41,13 +47,25 @@ export class SelectedItemsService {
     });
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} selectedItem`;
+  async findOne(id: string) {
+    const createdById = await this.localAuthCheck();
+
+    if (!createdById) {
+      return {};
+    }
+
+    const foundItem = await this.db.selectedItem.findFirst({
+      where: { itemId: id, userId: createdById },
+    });
+
+    return foundItem || JSON.stringify(null);
   }
 
-  update(id: string, updateSelectedItemDto: UpdateSelectedItemDto) {
-    return this.db.selectedItem.update({
-      where: { id },
+  async update(id: string, updateSelectedItemDto: UpdateSelectedItemDto) {
+    const createdById = await this.localAuthCheck();
+
+    return this.db.selectedItem.updateMany({
+      where: { itemId: id, userId: createdById },
       data: updateSelectedItemDto,
     });
   }

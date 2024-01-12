@@ -10,7 +10,6 @@ import { UsersService } from "@/users/users.service";
 import { TokenService } from "@/token/token.service";
 import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
 import { DatabaseService } from "@/database/database.service";
-import { UsersModule } from "@/users/users.module";
 
 @Injectable()
 export class AuthService {
