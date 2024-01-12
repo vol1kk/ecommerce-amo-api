@@ -29,6 +29,7 @@ export class SelectedItemsController {
   }
 
   @Get()
+  @IgnoreAuth()
   findAll(@Query() query: SelectedItemFind) {
     const type = query.type;
 
@@ -36,6 +37,7 @@ export class SelectedItemsController {
   }
 
   @Get(":id")
+  @IgnoreAuth()
   findOne(@Param("id") id: string) {
     return this.selectedItemsService.findOne(id);
   }

@@ -5,11 +5,14 @@ import { UpdateSelectedItemDto } from "@/selected-items/dto/update-selected-item
 import { DatabaseService } from "@/database/database.service";
 import { REQUEST } from "@nestjs/core";
 import { SelectedItemFind } from "@/selected-items/selected-items.controller";
+import { TokenService } from "@/token/token.service";
+import { IgnoreAuth } from "@/utils/decorators/ignore-auth.decorator";
 
 @Injectable({ scope: Scope.REQUEST })
 export class SelectedItemsService {
   constructor(
     private db: DatabaseService,
+    private tokenService: TokenService,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
@@ -17,8 +20,8 @@ export class SelectedItemsService {
     return "This action adds a new selectedItem";
   }
 
-  findAll(type: SelectedItemFind["type"]) {
-    const createdById = this.request["user"]?.id;
+  async findAll(type: SelectedItemFind["type"]) {
+    const createdById = await this.localAuthCheck();
 
     if (!createdById) {
       return [];
@@ -51,5 +54,20 @@ export class SelectedItemsService {
 
   remove(id: string) {
     return `This action removes a #${id} selectedItem`;
+  }
+
+  private async localAuthCheck() {
+    const [, token] = this.request.headers["authorization"]?.split(" ") || [];
+
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const payload = await this.tokenService.verifyToken(token, "access");
+      return payload.id;
+    } catch (e) {
+      return null;
+    }
   }
 }
