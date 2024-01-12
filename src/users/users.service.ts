@@ -67,12 +67,13 @@ export class UsersService {
       // Updating all addresses
       await Promise.all(pendingUpdates);
 
-      // Updating user in the end
       // noinspection TypeScriptValidateJSTypes
-      return tx.user.update({
+      const { password, ...user } = await tx.user.update({ // eslint-disable-line
         where: { id },
         data,
       });
+
+      return user;
     });
   }
 
