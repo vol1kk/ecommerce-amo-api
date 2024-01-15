@@ -5,6 +5,7 @@ import { UsersService } from "@/users/users.service";
 
 import isValidObjectId from "@/utils//helpers/isValidObjectId";
 import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
+import omitPassword from "@/utils/helpers/omitPassword";
 
 @Controller("users")
 @SetDatabaseName("user")
@@ -12,11 +13,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  async findOne(@Param("id") id: string) {
     if (isValidObjectId(id)) {
-      return this.usersService.findById(id);
+      const user = await this.usersService.findById(id);
+      return omitPassword(user);
     } else {
-      return this.usersService.findByEmail(id);
+      const user = await this.usersService.findByEmail(id);
+      return omitPassword(user);
     }
   }
 
