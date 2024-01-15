@@ -1,4 +1,4 @@
-import { Inject, Injectable, Scope } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException, Scope } from "@nestjs/common";
 
 import { CreateSelectedItemDto } from "@/selected-items/dto/create-selected-item.dto";
 import { UpdateSelectedItemDto } from "@/selected-items/dto/update-selected-item.dto";
@@ -51,21 +51,25 @@ export class SelectedItemsService {
     const createdById = await this.localAuthCheck();
 
     if (!createdById) {
-      return {};
+      return JSON.stringify(null);
     }
 
     const foundItem = await this.db.selectedItem.findFirst({
-      where: { itemId: id, userId: createdById },
+      where: { OR: [{ itemId: id }, { id }], userId: createdById },
     });
 
     return foundItem || JSON.stringify(null);
   }
 
   async update(id: string, updateSelectedItemDto: UpdateSelectedItemDto) {
-    const createdById = await this.localAuthCheck();
+    const item = await this.findOne(id);
 
-    return this.db.selectedItem.updateMany({
-      where: { itemId: id, userId: createdById },
+    if (typeof item === "string") {
+      throw new NotFoundException();
+    }
+
+    return this.db.selectedItem.update({
+      where: { id: item.id },
       data: updateSelectedItemDto,
     });
   }
