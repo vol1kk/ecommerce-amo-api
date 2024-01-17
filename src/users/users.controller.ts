@@ -3,9 +3,10 @@ import { Controller, Get, Body, Patch, Param, Delete } from "@nestjs/common";
 import { UpdateUserDto } from "@/users/dto";
 import { UsersService } from "@/users/users.service";
 
+import omitPassword from "@/utils/helpers/omitPassword";
 import isValidObjectId from "@/utils//helpers/isValidObjectId";
 import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
-import omitPassword from "@/utils/helpers/omitPassword";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Controller("users")
 @SetDatabaseName("user")
@@ -21,6 +22,14 @@ export class UsersController {
       const user = await this.usersService.findByEmail(id);
       return omitPassword(user);
     }
+  }
+
+  @Patch("password/:id")
+  updatePassword(
+    @Param("id") id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    return this.usersService.updatePassword(id, updatePasswordDto);
   }
 
   @Patch(":id")

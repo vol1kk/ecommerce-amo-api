@@ -8,7 +8,7 @@ import {
 
 import { UsersService } from "@/users/users.service";
 import { TokenService } from "@/token/token.service";
-import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
+import { AuthDto, OAuthDto } from "@/auth/dto/auth.dto";
 import { DatabaseService } from "@/database/database.service";
 
 @Injectable()

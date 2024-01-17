@@ -1,8 +1,8 @@
 import { z } from "nestjs-zod/z";
 
 export const AuthSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email({ message: "not_email" }),
+  password: z.string().min(3, { message: "min_length" }),
 });
 
 export const OAuthTokenSchema = z.object({

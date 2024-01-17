@@ -1,4 +1,8 @@
+import * as bcrypt from "bcrypt";
+import { REQUEST } from "@nestjs/core";
+import { ZodValidationException } from "nestjs-zod";
 import {
+  BadRequestException,
   Inject,
   Injectable,
   Scope,
@@ -6,10 +10,9 @@ import {
 } from "@nestjs/common";
 
 import { CreateUserDto, UpdateUserDto } from "@/users/dto";
-
+import { UserSchema } from "@/users/entities/user.entity";
 import { DatabaseService } from "@/database/database.service";
-import { REQUEST } from "@nestjs/core";
-import { Request } from "express";
+import { UpdatePasswordDto } from "@/users/dto/update-password.dto";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UsersService {
@@ -53,6 +56,20 @@ export class UsersService {
 
   // Disabling rule, because WebStorm's Prisma plugin being weird
   update(id: string, updateUserDto: UpdateUserDto) {
+    // Object with {key: true}  for each key that user passed
+    const existingKeys = Object.keys(updateUserDto).reduce((acc, key) => {
+      if (!acc[key]) acc[key] = true;
+      return acc;
+    }, {});
+
+    // Validating optional fields that user passed
+    const ExistingKeysSchema = UserSchema.pick(existingKeys);
+    const validationResult = ExistingKeysSchema.safeParse(updateUserDto);
+    if (!validationResult.success) {
+      throw new ZodValidationException(validationResult.error);
+    }
+
+    // Start updating user if validation passed
     const { address, ...data } = updateUserDto;
 
     return this.db.$transaction(async tx => {
@@ -74,6 +91,43 @@ export class UsersService {
       });
 
       return user;
+    });
+  }
+
+  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
+    if (id !== this.request["user"].id) {
+      throw new UnauthorizedException();
+    }
+
+    const { currentPass, newPass, repeatedPass } = updatePasswordDto;
+
+    const existingUser = await this.db.user.findUnique({
+      where: { id },
+    });
+
+    const isSamePassword = await bcrypt.compare(
+      currentPass,
+      existingUser?.password || "",
+    );
+
+    if (!isSamePassword) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: "wrong_pass",
+        errors: [{ path: ["currentPass"], message: "invalid_pass" }],
+      });
+    }
+
+    if (newPass !== repeatedPass) {
+      throw new BadRequestException("passwords_not_match");
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPass, salt);
+
+    return this.db.user.update({
+      where: { id },
+      data: { password: hashedPassword },
     });
   }
 

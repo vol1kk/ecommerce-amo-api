@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Res } from "@nestjs/common";
 
 import { AuthService } from "@/auth/auth.service";
-import { AuthDto, OAuthDto } from "@/auth/dto/auth-dto";
+import { AuthDto, OAuthDto } from "@/auth/dto/auth.dto";
 import { IgnoreAuth } from "@/utils/decorators/ignore-auth.decorator";
 import { IgnoreExistence } from "@/utils/decorators/ignore-existence.decorator";
 
