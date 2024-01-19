@@ -9,8 +9,9 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 
-import { CreateUserDto, UpdateUserDto } from "@/users/dto";
+import omitPassword from "@/utils/helpers/omitPassword";
 import { UserSchema } from "@/users/entities/user.entity";
+import { CreateUserDto, UpdateUserDto } from "@/users/dto";
 import { DatabaseService } from "@/database/database.service";
 import { UpdatePasswordDto } from "@/users/dto/update-password.dto";
 
@@ -34,6 +35,20 @@ export class UsersService {
         }),
       },
     });
+  }
+
+  async findMe() {
+    const id = this.request["user"].id;
+    if (!id) {
+      throw new UnauthorizedException();
+    }
+
+    const res = await this.db.user.findUnique({
+      where: { id },
+      include: { address: true, accounts: { select: { type: true } } },
+    });
+
+    return omitPassword(res);
   }
 
   findById(id: string) {

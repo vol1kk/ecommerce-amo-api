@@ -35,7 +35,7 @@ export class AddressService {
     return this.db.address.findUnique({ where: { id, userId } });
   }
 
-  async update(id: string, updateAddressDto: UpdateAddressDto) {
+  async update(id: string, updateAddressDto: CreateAddressDto) {
     return this.db.address.update({
       where: {
         id,

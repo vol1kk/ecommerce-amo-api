@@ -4,14 +4,18 @@ import { UpdateUserDto } from "@/users/dto";
 import { UsersService } from "@/users/users.service";
 
 import omitPassword from "@/utils/helpers/omitPassword";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import isValidObjectId from "@/utils//helpers/isValidObjectId";
 import { SetDatabaseName } from "@/utils//decorators/set-database.decorator";
-import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Controller("users")
 @SetDatabaseName("user")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @Get("/me")
+  findMe() {
+    return this.usersService.findMe();
+  }
 
   @Get(":id")
   async findOne(@Param("id") id: string) {

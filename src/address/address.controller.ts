@@ -34,7 +34,7 @@ export class AddressController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateAddressDto: UpdateAddressDto) {
+  update(@Param("id") id: string, @Body() updateAddressDto: CreateAddressDto) {
     return this.addressService.update(id, updateAddressDto);
   }
 
