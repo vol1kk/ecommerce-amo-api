@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Headers,
+  UnauthorizedException,
+} from "@nestjs/common";
 
 import { TokenDto } from "@/token/dto/token.dto";
 import { TokenService } from "@/token/token.service";
@@ -18,7 +24,9 @@ export class TokenController {
   }
 
   @Post("refresh")
-  refresh(@Body() tokenDto: TokenDto) {
-    return this.tokenService.refreshRotate(tokenDto.token);
+  refresh(@Body() refreshDto: { token: string }) {
+    if (!refreshDto.token) throw new UnauthorizedException();
+
+    return this.tokenService.refreshRotate(refreshDto.token);
   }
 }
